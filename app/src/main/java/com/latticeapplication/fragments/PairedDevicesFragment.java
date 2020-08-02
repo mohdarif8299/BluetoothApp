@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.latticeapplication.R;
 import com.latticeapplication.adapters.PairedDevicesAdapter;
@@ -27,6 +28,7 @@ public class PairedDevicesFragment extends Fragment {
     private final static int REQUEST_ENABLE_BT = 1;
     private Set<BluetoothDevice> allDevices;
     private PairedDevicesAdapter pairedDevicesAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +37,13 @@ public class PairedDevicesFragment extends Fragment {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         recyclerView = view.findViewById(R.id.recentpaireddevices);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        swipeRefreshLayout = view.findViewById(R.id.refresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (swipeRefreshLayout.isRefreshing()) {
+                allPairedDevices();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         allDevices = new HashSet<>();
         allPairedDevices();
         SearchView searchView = view.findViewById(R.id.search);

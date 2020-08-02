@@ -23,6 +23,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,7 +38,7 @@ public class AvailableDevicesFragment extends Fragment {
 
     private static final String TAG = "AvailableDevices";
     private RecyclerView recyclerView;
-    private final static int REQUEST_ENABLE_BT = 1;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private BluetoothAdapter bluetoothAdapter;
     private Set<BluetoothDevice> allDevices;
     private AllDevicesAdapter allDevicesAdapter;
@@ -55,6 +56,14 @@ public class AvailableDevicesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         noDeviceFound = view.findViewById(R.id.noDeviceFound);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        swipeRefreshLayout = view.findViewById(R.id.refresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (swipeRefreshLayout.isRefreshing()) {
+                unregisterAllDevicesReciever();
+                startSearching();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.custom_dialog);
         ImageView imageView = dialog.findViewById(R.id.image);
@@ -205,6 +214,10 @@ public class AvailableDevicesFragment extends Fragment {
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         getActivity().registerReceiver(myReceiver, intentFilter);
+    }
+
+    private void unregisterAllDevicesReciever() {
+        getActivity().unregisterReceiver(myReceiver);
     }
 
 }

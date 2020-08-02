@@ -37,7 +37,7 @@ public class SignupActivity extends AppCompatActivity {
             if (validateUserDetails()) {
                 saveUser();
             } else {
-                return;
+
             }
         });
     }
@@ -67,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
         } else if (addressEdit.getText().length() < 10) {
             addressEdit.setError("should be at least 10 characters");
             addressEdit.requestFocus();
+            return false;
         }
         return true;
     }
