@@ -163,6 +163,7 @@ public class AvailableDevicesFragment extends Fragment {
                 //3 cases:
                 //case1: bonded
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    getActivity().recreate();
                     Snackbar snackbar = Snackbar.make(getView(), "Paired Successfully", Snackbar.LENGTH_LONG);
                     snackbar.setActionTextColor(Color.WHITE);
                     snackbar.setAction("Dismiss", new View.OnClickListener() {
